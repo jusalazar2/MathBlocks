@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Numberblocks Math</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container" id="app-wrapper">
+        <header class="top-bar">
+            <h1 class="logo">MathBlocks</h1>
+            <button id="btn-open-stats" class="btn-outline">Estadísticas</button>
+        </header>
+
+        <div class="menu-central">
+            <div class="operation-buttons">
+                <button class="op-btn active" data-op="suma">
+                    <span class="op-icon">+</span>
+                    <span class="op-text">Suma</span>
+                </button>
+                <button class="op-btn" data-op="resta">
+                    <span class="op-icon">-</span>
+                    <span class="op-text">Resta</span>
+                </button>
+                <button class="op-btn" data-op="multiplicacion">
+                    <span class="op-icon">x</span>
+                    <span class="op-text">Multiplicación</span>
+                </button>
+                <button class="op-btn" data-op="division">
+                    <span class="op-icon">÷</span>
+                    <span class="op-text">División</span>
+                </button>
+            </div>
+            
+            <div id="current-player" class="turno-grande">Turno de: ...</div>
+        </div>
+
+        <main class="operation-display">
+            <div class="number-block">
+                <span id="num1" class="huge-number">0</span>
+                <img id="img-num1" src="" alt="Numberblock 1" class="nb-image" style="display: none;">
+            </div>
+            <div class="operator-block">
+                <span id="operator" class="huge-number">+</span>
+            </div>
+            <div class="number-block">
+                <span id="num2" class="huge-number">0</span>
+                <img id="img-num2" src="" alt="Numberblock 2" class="nb-image" style="display: none;">
+            </div>
+            
+            <div class="operator-block" id="equals-block" style="display: none;">
+                <span class="huge-number">=</span>
+            </div>
+            <div class="number-block" id="result-block" style="display: none;">
+                <span id="result-num" class="huge-number">0</span>
+                <img id="img-result" src="" alt="Numberblock Result" class="nb-image" style="display: none;">
+            </div>
+        </main>
+
+        <footer class="interaction-card">
+            <h2>¿Cuál es el resultado?</h2>
+            <div class="input-group">
+                <input type="number" id="answer-input" placeholder="Escribe aquí" autocomplete="off">
+                <button id="verify-btn" class="btn-primary">Verificar</button>
+            </div>
+            <div id="feedback-message" class="feedback"></div>
+        </footer>
+    </div>
+
+    <div id="setup-modal" class="modal active">
+            <div class="modal-content">
+                <h2>⚙️ Configuración del Juego</h2>
+                <div class="setup-group">
+                    <label>Límite máximo para Sumas (Ej. 10):</label>
+                    <input type="number" id="limit-suma-input" value="10" min="1">
+                </div>
+                <div class="setup-group">
+                    <label>Número mayor para Restas (Ej. 10):</label>
+                    <input type="number" id="limit-resta-input" value="10" min="1">
+                </div>
+                <div class="setup-group">
+                    <label>¿Cuántos van a jugar?</label>
+                    <input type="number" id="num-players-input" min="1" max="5" value="1">
+                </div>
+                <div id="names-container" class="setup-group">
+                    </div>
+                <button id="btn-start-game" class="btn-primary" style="margin-top: 15px;">¡Empezar a Jugar!</button>
+            </div>
+        </div>
+
+        <div id="stats-modal" class="modal">
+            <div class="modal-content stats-content">
+                <h2>🏆 Estadísticas de Jugadores</h2>
+                <div id="stats-container">
+                    </div>
+                <div class="modal-actions">
+                    <button id="btn-close-stats" class="btn-outline" style="color: #333; background: #eee;">Cerrar</button>
+                    <button id="btn-reset-data" class="btn-primary" style="background: #E74C3C; color: white;">Borrar Datos</button>
+                </div>
+            </div>
+        </div>
+
+       
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
