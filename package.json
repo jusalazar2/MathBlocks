@@ -1,0 +1,28 @@
+{
+  "name": "mathnumberblocks",
+  "version": "1.0.0",
+  "description": "🔢 MathBlocks - Interactive Math Learning Tool (Nota: Reemplaza este enlace con una captura de pantalla real de tu juego)",
+  "main": "app.js",
+  "scripts": {
+    "dev": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jusalazar2/MathBlocks.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/jusalazar2/MathBlocks/issues"
+  },
+  "homepage": "https://github.com/jusalazar2/MathBlocks#readme",
+  "dependencies": {
+    "express": "^5.2.1",
+    "socket.io": "^4.8.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}

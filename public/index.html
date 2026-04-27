@@ -10,6 +10,18 @@
     <div class="app-container" id="app-wrapper">
         <header class="top-bar">
             <h1 class="logo">MathBlocks</h1>
+            
+            <div id="room-info" style="display: none; background: white; color: #2980B9; padding: 5px 15px; border-radius: 20px; font-weight: bold; font-size: 18px;">
+                PIN: <span id="display-room-code">----</span>
+            </div>
+
+            <div id="identity-container" style="display: none; background: rgba(0,0,0,0.2); padding: 5px 15px; border-radius: 20px;">
+                <label style="font-weight: bold; margin-right: 5px;">Yo soy:</label>
+                <select id="my-name-select" class="dropdown" style="background: white; color: black; padding: 5px;">
+                    <option value="">(Seleccionar)</option>
+                </select>
+            </div>
+
             <button id="btn-open-stats" class="btn-outline">Estadísticas</button>
         </header>
 
@@ -68,41 +80,61 @@
         </footer>
     </div>
 
-    <div id="setup-modal" class="modal active">
+    <div id="welcome-modal" class="modal active">
+            <div class="modal-content" style="text-align: center;">
+                <h2 style="font-size: 30px; color: #2980B9;">🎮 MathBlocks</h2>
+                <p style="margin-bottom: 20px;">¿Qué deseas hacer?</p>
+                <button id="btn-show-create" class="btn-primary" style="width: 100%; margin-bottom: 15px;">Crear Nuevo Juego</button>
+                <button id="btn-show-join" class="btn-outline" style="width: 100%; color: #333; background: #eee;">Unirme a un Juego</button>
+            </div>
+        </div>
+
+        <div id="join-modal" class="modal">
+            <div class="modal-content" style="text-align: center;">
+                <h2>Unirse al Juego</h2>
+                <p style="margin-bottom: 15px;">Pídele el código de 8 dígitos al creador del juego.</p>
+                <input type="text" id="join-code-input" placeholder="Ej. A1B2C3D4" style="width: 100%; padding: 15px; font-size: 20px; text-align: center; border-radius: 10px; border: 2px solid #ddd; margin-bottom: 20px; text-transform: uppercase;">
+                <button id="btn-join-game" class="btn-primary" style="width: 100%; margin-bottom: 10px;">Entrar</button>
+                <button id="btn-back-from-join" class="btn-outline" style="width: 100%; color: #333; background: transparent; border: none;">Volver</button>
+            </div>
+        </div>
+
+        <div id="setup-modal" class="modal">
             <div class="modal-content">
                 <h2>⚙️ Configuración del Juego</h2>
                 <div class="setup-group">
-                    <label>Límite máximo para Sumas (Ej. 10):</label>
+                    <label>Límite máximo para Sumas:</label>
                     <input type="number" id="limit-suma-input" value="10" min="1">
                 </div>
                 <div class="setup-group">
-                    <label>Número mayor para Restas (Ej. 10):</label>
+                    <label>Número mayor para Restas:</label>
                     <input type="number" id="limit-resta-input" value="10" min="1">
                 </div>
                 <div class="setup-group">
                     <label>¿Cuántos van a jugar?</label>
                     <input type="number" id="num-players-input" min="1" max="5" value="1">
                 </div>
-                <div id="names-container" class="setup-group">
-                    </div>
-                <button id="btn-start-game" class="btn-primary" style="margin-top: 15px;">¡Empezar a Jugar!</button>
+                <div id="names-container" class="setup-group"></div>
+                <button id="btn-start-game" class="btn-primary" style="width: 100%; margin-top: 15px;">¡Empezar a Jugar!</button>
+                <button id="btn-back-from-setup" class="btn-outline" style="width: 100%; margin-top: 10px; color: #333; background: transparent; border: none;">Cancelar</button>
             </div>
         </div>
 
         <div id="stats-modal" class="modal">
             <div class="modal-content stats-content">
-                <h2>🏆 Estadísticas de Jugadores</h2>
-                <div id="stats-container">
-                    </div>
+                <h2>🏆 Estadísticas</h2>
+                <div id="stats-container"></div>
                 <div class="modal-actions">
                     <button id="btn-close-stats" class="btn-outline" style="color: #333; background: #eee;">Cerrar</button>
-                    <button id="btn-reset-data" class="btn-primary" style="background: #E74C3C; color: white;">Borrar Datos</button>
                 </div>
             </div>
         </div>
 
+        
+
        
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
     <script src="app.js"></script>
 </body>
 </html>
