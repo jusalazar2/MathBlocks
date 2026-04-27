@@ -301,3 +301,66 @@ body {
 .pop-in-animation {
     animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
 }
+
+/* --- NUEVO LAYOUT CON PANEL LATERAL --- */
+#app-wrapper {
+    flex-direction: row; /* Cambia a fila para poner el panel a la izquierda */
+    align-items: stretch;
+    width: 95%;
+    max-width: 1200px;
+    height: 90vh;
+}
+
+.main-content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    padding-left: 20px;
+}
+
+.sidebar {
+    width: 280px; /* Lo hicimos un poco más ancho */
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 20px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    color: white;
+}
+
+.sidebar-header { margin-bottom: 20px; text-align: center; }
+.room-badge { background: white; color: #2980B9; padding: 5px; border-radius: 10px; font-weight: bold; margin-top: 10px;}
+
+
+.player-list { 
+    list-style: none; 
+    padding: 0; 
+    flex-grow: 1; 
+    overflow-y: auto; 
+    overflow-x: hidden; /* Esto mata la barra de scroll horizontal */
+}
+
+.player-item {
+    background: rgba(255,255,255,0.1);
+    margin-bottom: 10px; 
+    padding: 10px;
+    border-radius: 10px;
+    display: flex; 
+    align-items: center; 
+    justify-content: space-between;
+    flex-wrap: wrap; /* Permite que el texto baje si es muy largo */
+    transition: all 0.3s ease;
+}
+
+.player-item.is-turn { background: rgba(255,255,255,0.4); border: 2px solid #F1C40F; transform: scale(1.05); }
+
+.status-dot { height: 12px; width: 12px; border-radius: 50%; display: inline-block; margin-right: 8px;}
+.status-online { background-color: #2ECC71; box-shadow: 0 0 8px #2ECC71;}
+.status-offline { background-color: #E74C3C; opacity: 0.5; }
+
+.identity-btn {
+    padding: 15px; font-size: 18px; border-radius: 10px; border: none;
+    cursor: pointer; font-weight: bold; transition: 0.2s;
+}
+.identity-btn:hover { background: #2980B9; color: white; }
+.identity-btn:disabled { background: #eee; color: #999; cursor: not-allowed; }

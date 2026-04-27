@@ -8,18 +8,11 @@ const io = new Server(server);
 
 app.use(express.static('public'));
 
-// OBJETO GLOBAL QUE GUARDA TODAS LAS PARTIDAS
-// Formato: { 'A1B2C3D4': { players: [], maxSuma: 10, currentProblem: {}... } }
 const games = {};
 
-// Función para generar código de 8 dígitos/letras
-function generateRoomCode() {
-    return Math.random().toString(36).substring(2, 10).toUpperCase();
-}
-
+function generateRoomCode() { return Math.random().toString(36).substring(2, 10).toUpperCase(); }
 function getRandomInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
 
-// Genera un problema, pero ahora Específico para una Sala (roomCode)
 function generateProblem(roomCode, operation) {
     const game = games[roomCode];
     if (!game) return;
@@ -28,67 +21,105 @@ function generateProblem(roomCode, operation) {
     let num1, num2, answer;
 
     if (operation === 'suma') {
-        answer = getRandomInt(0, game.maxSuma); 
-        num1 = getRandomInt(0, answer);
-        num2 = answer - num1;
+        answer = getRandomInt(0, game.maxSuma); num1 = getRandomInt(0, answer); num2 = answer - num1;
     } else if (operation === 'resta') {
-        num1 = getRandomInt(0, game.maxResta);
-        num2 = getRandomInt(0, num1); 
-        answer = num1 - num2;
+        num1 = getRandomInt(0, game.maxResta); num2 = getRandomInt(0, num1); answer = num1 - num2;
     } else if (operation === 'multiplicacion') {
-        num1 = getRandomInt(1, 10); num2 = getRandomInt(1, 10);
-        answer = num1 * num2;
+        num1 = getRandomInt(1, 10); num2 = getRandomInt(1, 10); answer = num1 * num2;
     } else if (operation === 'division') {
-        num2 = getRandomInt(1, 10); answer = getRandomInt(1, 10); 
-        num1 = num2 * answer; 
+        num2 = getRandomInt(1, 10); answer = getRandomInt(1, 10); num1 = num2 * answer; 
     }
-
     game.currentProblem = { num1, num2, answer };
     return game;
 }
 
-// --- CONEXIONES SOCKET.IO ---
-io.on('connection', (socket) => {
-    console.log('🟢 Dispositivo conectado:', socket.id);
+// Lógica inteligente para saltar turnos de jugadores desconectados
+function advanceTurn(roomCode) {
+    const game = games[roomCode];
+    if (!game) return;
+    
+    let attempts = 0;
+    // Gira el turno hasta encontrar a alguien 'connected', o da la vuelta completa si no hay nadie
+    do {
+        game.currentPlayerIndex = (game.currentPlayerIndex + 1) % game.players.length;
+        attempts++;
+    } while (!game.players[game.currentPlayerIndex].connected && attempts < game.players.length);
+}
 
-    // 1. CREAR UN NUEVO JUEGO
+io.on('connection', (socket) => {
+    
+    // 1. CREAR JUEGO (Host)
     socket.on('createGame', (data) => {
         const roomCode = generateRoomCode();
         
-        // Creamos la "caja" de datos para esta nueva sala
+        // Creamos la partida y le inyectamos la estructura de estadísticas a cada jugador
         games[roomCode] = {
-            players: data.players,
-            maxSuma: data.maxSuma,
+            hostSocketId: socket.id,
+            players: data.players.map(p => ({ 
+                name: p.name, 
+                connected: false, 
+                socketId: null,
+                // AQUÍ ESTÁ LA SOLUCIÓN: Agregamos las estadísticas iniciales en cero
+                stats: { 
+                    suma: {bien: 0, mal: 0}, 
+                    resta: {bien: 0, mal: 0}, 
+                    multiplicacion: {bien: 0, mal: 0}, 
+                    division: {bien: 0, mal: 0} 
+                }
+            })),
+            maxSuma: data.maxSuma, 
             maxResta: data.maxResta,
-            currentPlayerIndex: 0,
-            currentOperation: 'suma',
-            currentProblem: { num1: 0, num2: 0, answer: 0 }
+            currentPlayerIndex: 0, 
+            currentOperation: 'suma', 
+            currentProblem: {}
         };
-
-        // Metemos a este jugador en la sala de Socket.io
-        socket.join(roomCode);
-        socket.roomId = roomCode; // Guardamos dónde está metido este dispositivo
-
-        generateProblem(roomCode, 'suma');
         
-        // Le avisamos a la sala que ya pueden jugar y les mandamos el código
-        io.to(roomCode).emit('syncState', { roomCode, gameData: games[roomCode] });
+        socket.join(roomCode);
+        socket.roomId = roomCode;
+        generateProblem(roomCode, 'suma');
+        socket.emit('roomFound', { roomCode, gameData: games[roomCode], isHost: true });
     });
 
-    // 2. UNIRSE A UN JUEGO EXISTENTE
+    // 2. UNIRSE (Buscar Sala)
     socket.on('joinGame', (roomCode) => {
         roomCode = roomCode.toUpperCase();
         if (games[roomCode]) {
             socket.join(roomCode);
             socket.roomId = roomCode;
-            // Le mandamos los datos de cómo va el juego
-            socket.emit('syncState', { roomCode, gameData: games[roomCode] });
+            socket.emit('roomFound', { roomCode, gameData: games[roomCode], isHost: false });
         } else {
-            socket.emit('errorMsg', 'Código no encontrado. Revisa e intenta de nuevo.');
+            socket.emit('errorMsg', 'Código no encontrado.');
         }
     });
 
-    // 3. CAMBIAR OPERACIÓN
+    // 3. SELECCIONAR IDENTIDAD (Bloquea el jugador para que nadie más lo use)
+    socket.on('claimIdentity', (playerName) => {
+        const roomCode = socket.roomId;
+        const game = games[roomCode];
+        if (game) {
+            const player = game.players.find(p => p.name === playerName);
+            if (player && !player.connected) {
+                player.connected = true;
+                player.socketId = socket.id; // Vinculamos este celular con este jugador
+                io.to(roomCode).emit('syncState', { roomCode, gameData: game });
+            }
+        }
+    });
+
+    // 4. EL HOST AGREGA UN JUGADOR NUEVO EN MEDIO DE LA PARTIDA
+    socket.on('addPlayer', (newPlayerName) => {
+        const roomCode = socket.roomId;
+        const game = games[roomCode];
+        if (game && game.hostSocketId === socket.id) {
+            game.players.push({
+                name: newPlayerName, connected: false, socketId: null,
+                stats: { suma: {bien:0, mal:0}, resta: {bien:0, mal:0}, multiplicacion: {bien:0, mal:0}, division: {bien:0, mal:0} }
+            });
+            io.to(roomCode).emit('syncState', { roomCode, gameData: game });
+        }
+    });
+
+    // 5. JUGABILIDAD
     socket.on('changeOperation', (operation) => {
         const roomCode = socket.roomId;
         if (roomCode && games[roomCode]) {
@@ -97,7 +128,6 @@ io.on('connection', (socket) => {
         }
     });
 
-    // 4. VERIFICAR RESPUESTA
     socket.on('checkAnswer', (userAnswer) => {
         const roomCode = socket.roomId;
         if (!roomCode || !games[roomCode]) return;
@@ -107,17 +137,11 @@ io.on('connection', (socket) => {
         
         if (isCorrect && game.players.length > 0) {
             game.players[game.currentPlayerIndex].stats[game.currentOperation].bien++;
-            
-            // Avisar acierto a todos en la sala
-            io.to(roomCode).emit('answerResult', { 
-                isCorrect: true, 
-                correctAnswer: game.currentProblem.answer, 
-                players: game.players 
-            });
+            io.to(roomCode).emit('answerResult', { isCorrect: true, correctAnswer: game.currentProblem.answer, players: game.players });
             
             setTimeout(() => {
-                if(games[roomCode]) { // Por si cerraron la sala en esos 2 seg
-                    game.currentPlayerIndex = (game.currentPlayerIndex + 1) % game.players.length;
+                if(games[roomCode]) { 
+                    advanceTurn(roomCode); // Salta a los desconectados
                     generateProblem(roomCode, game.currentOperation);
                     io.to(roomCode).emit('newProblem', game);
                 }
@@ -125,18 +149,34 @@ io.on('connection', (socket) => {
 
         } else if (!isCorrect && game.players.length > 0) {
             game.players[game.currentPlayerIndex].stats[game.currentOperation].mal++;
-            // Avisar error
             io.to(roomCode).emit('answerResult', { isCorrect: false, players: game.players });
         }
     });
 
-    // Cuando se desconectan (podrías limpiar salas vacías aquí en el futuro)
+    // 6. DESCONEXIÓN (Si se cierra la pestaña o se cae el internet)
     socket.on('disconnect', () => {
-        console.log('🔴 Dispositivo desconectado:', socket.id);
+        const roomCode = socket.roomId;
+        const game = games[roomCode];
+        if (game) {
+            // Buscamos quién se desconectó
+            const player = game.players.find(p => p.socketId === socket.id);
+            if (player) {
+                player.connected = false;
+                player.socketId = null;
+                console.log(`🔴 ${player.name} se ha desconectado.`);
+                
+                // Si era su turno, lo saltamos automáticamente
+                if (game.players[game.currentPlayerIndex] === player) {
+                    advanceTurn(roomCode);
+                    generateProblem(roomCode, game.currentOperation);
+                    io.to(roomCode).emit('newProblem', game);
+                }
+                
+                io.to(roomCode).emit('syncState', { roomCode, gameData: game });
+            }
+        }
     });
 });
 
 const PORT = 3000;
-server.listen(PORT, () => {
-    console.log(`🚀 Servidor central corriendo en http://localhost:${PORT}`);
-});
+server.listen(PORT, () => { console.log(`🚀 Servidor central corriendo en http://localhost:${PORT}`); });
