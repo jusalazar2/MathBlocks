@@ -1,6 +1,6 @@
 # 🔢 MathBlocks & Flags - Interactive Learning Platform
 
-[MathBlocks Preview](public/preview.png)
+[MathBlocks Preview](https://github.com/jusalazar2/MathBlocks/blob/main/public/preview.png)
 
 ## 📖 Descripción del Proyecto
 **MathBlocks** ha evolucionado a una plataforma educativa multijugador en tiempo real. Diseñada originalmente para enseñar operaciones matemáticas básicas con la estética de "Numberblocks", ahora incluye soporte para geografía mundial (Banderas) y una arquitectura Cliente-Servidor completa.
