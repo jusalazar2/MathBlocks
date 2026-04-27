@@ -21,6 +21,7 @@ const answerInput = document.getElementById('answer-input');
 const verifyBtn = document.getElementById('verify-btn');
 const feedbackMessage = document.getElementById('feedback-message');
 const currentPlayerDisplay = document.getElementById('current-player');
+const idkBtn = document.getElementById('idk-btn');
 
 // Variables Locales
 let myIdentity = null; 
@@ -157,15 +158,13 @@ function updateGameUI(gameData) {
     localPlayers = gameData.players;
     renderSidebar(gameData);
     
-    document.getElementById('num1').textContent = gameData.currentProblem.num1;
-    document.getElementById('num2').textContent = gameData.currentProblem.num2;
-    document.getElementById('img-num1').src = `assets/numberblock_${gameData.currentProblem.num1}.png`;
-    document.getElementById('img-num1').style.display = 'block';
-    document.getElementById('img-num2').src = `assets/numberblock_${gameData.currentProblem.num2}.png`;
-    document.getElementById('img-num2').style.display = 'block';
+    // Capturamos los contenedores nuevos
+    const flagContainer = document.getElementById('flag-container');
+    const mathBox1 = document.getElementById('math-box-1');
+    const mathBoxOp = document.getElementById('math-box-op');
+    const mathBox2 = document.getElementById('math-box-2');
 
-    const opSigns = { 'suma': '+', 'resta': '-', 'multiplicacion': 'x', 'division': '÷' };
-    document.getElementById('operator').textContent = opSigns[gameData.currentOperation];
+    // Iluminar el botón correcto
     document.querySelectorAll('.op-btn').forEach(btn => {
         btn.classList.toggle('active', btn.getAttribute('data-op') === gameData.currentOperation);
     });
@@ -173,15 +172,49 @@ function updateGameUI(gameData) {
     document.getElementById('equals-block').style.display = 'none';
     document.getElementById('result-block').style.display = 'none';
 
+    // ¿Es Banderas o Matemáticas?
+    if (gameData.currentOperation === 'banderas') {
+        // Mostrar Bandera, Ocultar Matemáticas
+        mathBox1.style.display = 'none';
+        mathBoxOp.style.display = 'none';
+        mathBox2.style.display = 'none';
+        flagContainer.style.display = 'block';
+        
+        document.getElementById('flag-image').src = gameData.currentProblem.flagUrl;
+        
+        // El teclado en móviles ahora debe ser de texto (no numérico)
+        answerInput.type = 'text';
+
+    } else {
+        // Mostrar Matemáticas, Ocultar Banderas
+        flagContainer.style.display = 'none';
+        mathBox1.style.display = 'block';
+        mathBoxOp.style.display = 'block';
+        mathBox2.style.display = 'block';
+
+        document.getElementById('num1').textContent = gameData.currentProblem.num1;
+        document.getElementById('num2').textContent = gameData.currentProblem.num2;
+        document.getElementById('img-num1').src = `assets/numberblock_${gameData.currentProblem.num1}.png`;
+        document.getElementById('img-num1').style.display = 'block';
+        document.getElementById('img-num2').src = `assets/numberblock_${gameData.currentProblem.num2}.png`;
+        document.getElementById('img-num2').style.display = 'block';
+
+        const opSigns = { 'suma': '+', 'resta': '-', 'multiplicacion': 'x', 'division': '÷' };
+        document.getElementById('operator').textContent = opSigns[gameData.currentOperation];
+        
+        // Volvemos al teclado numérico
+        answerInput.type = 'number';
+    }
+
     if (gameData.players.length > 0) {
         const playerInTurn = gameData.players[gameData.currentPlayerIndex];
         currentPlayerDisplay.textContent = playerInTurn ? `Turno de: ${playerInTurn.name}` : 'Esperando...';
         
         if (playerInTurn && myIdentity === playerInTurn.name) {
-            answerInput.disabled = false; verifyBtn.disabled = false;
+            answerInput.disabled = false; verifyBtn.disabled = false; idkBtn.disabled = false;
             answerInput.placeholder = "¡Tu turno!"; answerInput.focus();
         } else {
-            answerInput.disabled = true; verifyBtn.disabled = true;
+            answerInput.disabled = true; verifyBtn.disabled = true; idkBtn.disabled = true;
             answerInput.placeholder = playerInTurn ? `Esperando a ${playerInTurn.name}...` : '';
             answerInput.value = "";
         }
@@ -199,28 +232,76 @@ socket.on('answerResult', (data) => {
     appWrapper.classList.remove('party-animation', 'shake-animation');
     void appWrapper.offsetWidth; 
 
-    if (data.isCorrect) {
+    if (data.isCorrect === true) {
         feedbackMessage.textContent = "¡Excelente! 🎉";
         feedbackMessage.className = "feedback success";
+        feedbackMessage.style.color = ""; // Limpiar color manual
         appWrapper.classList.add('party-animation');
         
         document.getElementById('result-num').textContent = data.correctAnswer;
-        document.getElementById('img-result').src = `assets/numberblock_${data.correctAnswer}.png`;
-        document.getElementById('img-result').style.display = 'block'; 
+        if (data.operation === 'banderas') {
+            document.getElementById('img-result').style.display = 'none';
+        } else {
+            document.getElementById('img-result').src = `assets/numberblock_${data.correctAnswer}.png`;
+            document.getElementById('img-result').style.display = 'block'; 
+        }
+
         document.getElementById('equals-block').style.display = 'block'; 
         document.getElementById('result-block').style.display = 'block';
         
         if (typeof confetti !== 'undefined') {
             confetti({ particleCount: 150, spread: 160, startVelocity: 30, gravity: 0.6, origin: { y: 0.5 }, colors: ['#3498DB', '#E74C3C', '#F1C40F', '#2ECC71', '#9B59B6'], zIndex: 1000 });
         }
+        
+    } else if (data.isCorrect === 'skipped') {
+        // NUEVO: Lógica cuando se rinden
+        feedbackMessage.textContent = `La respuesta es: ${data.correctAnswer} 👀`;
+        feedbackMessage.className = "feedback";
+        feedbackMessage.style.color = "#F39C12"; // Color naranja amigable
+        
+        document.getElementById('result-num').textContent = data.correctAnswer;
+        if (data.operation === 'banderas') {
+            document.getElementById('img-result').style.display = 'none';
+        } else {
+            document.getElementById('img-result').src = `assets/numberblock_${data.correctAnswer}.png`;
+            document.getElementById('img-result').style.display = 'block'; 
+        }
+
+        document.getElementById('equals-block').style.display = 'block'; 
+        document.getElementById('result-block').style.display = 'block';
+        document.getElementById('result-block').classList.add('pop-in-animation');
+        // No hay confeti ni temblor de pantalla
+
     } else {
         feedbackMessage.textContent = "¡Ups! Inténtalo de nuevo. 🤔";
         feedbackMessage.className = "feedback error";
+        feedbackMessage.style.color = ""; // Limpiar color manual
         appWrapper.classList.add('shake-animation');
         if (!answerInput.disabled) { answerInput.value = ""; answerInput.focus(); }
     }
 });
 
+// NUEVO: Escuchar si el servidor cierra la sala (porque el Host se fue)
+socket.on('roomClosed', (message) => {
+    // Mostramos la alerta con el mensaje que mandó el servidor
+    alert(message);
+    // Recargamos la página para botarlos a la pantalla de inicio principal
+    window.location.reload(); 
+});
+
+
+// NUEVO: Enviar que no se sabe la respuesta
+idkBtn.addEventListener('click', () => {
+    if (!idkBtn.disabled) socket.emit('idkAnswer');
+});
+
+// Modificada para permitir enviar texto
+function sendAnswer() {
+    if (answerInput.disabled) return;
+    const userAnswer = answerInput.value.trim();
+    // Validamos que al menos haya escrito algo
+    if (userAnswer !== "") socket.emit('checkAnswer', userAnswer);
+}
 // --- INTERACCIÓN EN JUEGO ---
 document.querySelectorAll('.op-btn').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -229,15 +310,10 @@ document.querySelectorAll('.op-btn').forEach(btn => {
     });
 });
 
-function sendAnswer() {
-    if (answerInput.disabled) return;
-    const userAnswer = parseInt(answerInput.value);
-    if (!isNaN(userAnswer)) socket.emit('checkAnswer', userAnswer);
-}
+
 verifyBtn.addEventListener('click', sendAnswer);
 answerInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendAnswer(); });
 
-// Botón de Estadísticas
 // Botón de Estadísticas
 document.getElementById('btn-open-stats').addEventListener('click', () => {
     const container = document.getElementById('stats-container');
@@ -266,9 +342,14 @@ document.getElementById('btn-open-stats').addEventListener('click', () => {
                     <span><span style="color: #2ECC71; font-weight: bold;">✔ ${p.stats.multiplicacion.bien}</span> <span style="color: #ccc;">|</span> <span style="color: #E74C3C; font-weight: bold;">✖ ${p.stats.multiplicacion.mal}</span></span>
                 </div>
                 
-                <div style="display: flex; justify-content: space-between; padding: 5px 0;">
+                <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #ddd; padding: 5px 0;">
                     <span style="color: #333; font-weight: 500;">División:</span> 
                     <span><span style="color: #2ECC71; font-weight: bold;">✔ ${p.stats.division.bien}</span> <span style="color: #ccc;">|</span> <span style="color: #E74C3C; font-weight: bold;">✖ ${p.stats.division.mal}</span></span>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; padding: 5px 0; background: rgba(41, 128, 185, 0.1); border-radius: 5px; margin-top: 5px;">
+                    <span style="color: #333; font-weight: bold;">🌍 Banderas:</span> 
+                    <span><span style="color: #2ECC71; font-weight: bold;">✔ ${p.stats.banderas?.bien || 0}</span> <span style="color: #ccc;">|</span> <span style="color: #E74C3C; font-weight: bold;">✖ ${p.stats.banderas?.mal || 0}</span></span>
                 </div>
             </div>`;
     });

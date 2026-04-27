@@ -42,17 +42,22 @@
                     <button class="op-btn" data-op="resta"><span class="op-icon">-</span><span class="op-text">Resta</span></button>
                     <button class="op-btn" data-op="multiplicacion"><span class="op-icon">x</span><span class="op-text">Multiplicación</span></button>
                     <button class="op-btn" data-op="division"><span class="op-icon">÷</span><span class="op-text">División</span></button>
+                    <button class="op-btn" data-op="banderas"><span class="op-icon">🌍</span><span class="op-text">Banderas</span></button>
                 </div>
                 <div id="current-player" class="turno-grande">Esperando jugadores...</div>
             </div>
 
             <main class="operation-display">
-                <div class="number-block">
+                <div id="flag-container" style="display: none; text-align: center; width: 100%;">
+                    <img id="flag-image" src="" alt="Bandera" style="height: 220px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); border: 2px solid white;">
+                </div>
+
+                <div class="number-block" id="math-box-1">
                     <span id="num1" class="huge-number">0</span>
                     <img id="img-num1" src="" class="nb-image" style="display: none;">
                 </div>
-                <div class="operator-block"><span id="operator" class="huge-number">+</span></div>
-                <div class="number-block">
+                <div class="operator-block" id="math-box-op"><span id="operator" class="huge-number">+</span></div>
+                <div class="number-block" id="math-box-2">
                     <span id="num2" class="huge-number">0</span>
                     <img id="img-num2" src="" class="nb-image" style="display: none;">
                 </div>
@@ -69,6 +74,7 @@
                 <div class="input-group">
                     <input type="number" id="answer-input" placeholder="Escribe aquí" autocomplete="off" disabled>
                     <button id="verify-btn" class="btn-primary" disabled>Verificar</button>
+                    <button id="idk-btn" class="btn-outline" style="background: #F39C12; color: white; border: none;" disabled>No lo sé 🤔</button>
                 </div>
                 <div id="feedback-message" class="feedback"></div>
             </footer>
