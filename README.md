@@ -1,67 +1,66 @@
-# MathBlocks
-🔢 MathBlocks - Interactive Math Learning Tool
-(Nota: Reemplaza este enlace con una captura de pantalla real de tu juego)
+# 🔢 MathBlocks & Flags - Interactive Learning Platform
 
-📖 Descripción del Proyecto
-MathBlocks es una aplicación web interactiva y gamificada diseñada para enseñar operaciones matemáticas básicas (suma, resta, multiplicación y división) a niños. Inspirada en la estética visual de "Numberblocks", la herramienta transforma la práctica matemática en una experiencia atractiva mediante retroalimentación visual inmediata, animaciones fluidas y un sistema de físicas de celebración.
+![MathBlocks Preview](https://via.placeholder.com/800x400.png?text=Captura+de+Pantalla+de+MathBlocks)
+*(Nota: Reemplaza este enlace con una captura de pantalla real de tu juego en su nueva versión)*
 
-Este proyecto nace de la iniciativa de crear herramientas educativas a la medida (diseñado originalmente con mucho cariño para potenciar el aprendizaje de Juan Daniel), fusionando la lógica de programación con interfaces de usuario altamente didácticas.
+## 📖 Descripción del Proyecto
+**MathBlocks** ha evolucionado a una plataforma educativa multijugador en tiempo real. Diseñada originalmente para enseñar operaciones matemáticas básicas con la estética de "Numberblocks", ahora incluye soporte para geografía mundial (Banderas) y una arquitectura Cliente-Servidor completa.
 
-✨ Características Principales
-Motor Matemático Dinámico: Generación procedimental de problemas matemáticos basada en parámetros configurables.
+Este proyecto gamifica el aprendizaje mediante retroalimentación visual, físicas de celebración y un entorno de juego sincronizado entre múltiples dispositivos en red local (estilo Kahoot!).
 
-Sumas: Limitadas a un valor máximo personalizable.
+## ✨ Características Principales
+* **🎮 Multijugador en Tiempo Real (Salas):** * Creación de salas privadas con código PIN de 8 dígitos.
+  * Soporte para múltiples dispositivos sincronizados simultáneamente vía WebSockets.
+  * Sistema inteligente de salto de turnos (ignora temporalmente a los jugadores desconectados).
+  * Prevención de *Ghost Rooms* (cierre automático de la sala si el Host se desconecta).
+* **🧮 Motor Matemático Procedimental:** * Generación de Sumas, Restas, Multiplicaciones y Divisiones con límites configurables.
+* **🌍 Modo Geografía (Banderas):**
+  * Más de 100 banderas del mundo extraídas dinámicamente utilizando la API de FlagCDN.
+  * Validador de texto inteligente (normaliza entradas ignorando mayúsculas, minúsculas y tildes).
+* **🧠 Diseño Pedagógico:**
+  * Botón "No lo sé 🤔" que revela la respuesta amigablemente sin penalizar las estadísticas del jugador, fomentando la memorización sin frustración.
+  * Panel lateral en vivo con el estado de conexión de cada jugador y su turno.
+  * Estadísticas detalladas por categoría para cada jugador (Matemáticas y Geografía).
+* **🎉 Feedback Visual y Físicas:**
+  * Renderizado dinámico de personajes (Numberblocks).
+  * Animaciones *Pop-in* y físicas de simulación de explosión de confeti en pantalla completa para celebrar aciertos.
 
-Restas: Garantiza resultados no negativos, con un número inicial máximo configurable.
+## 🛠️ Tecnologías Utilizadas
+* **Backend:** Node.js, Express.
+* **Realtime Engine:** Socket.io (Manejo de Eventos y Rooms).
+* **Frontend:** HTML5, CSS3, Vanilla JavaScript (ES6+).
+* **Librerías Externas:** `canvas-confetti` (Físicas), `FlagCDN` (CDN de imágenes de banderas).
 
-Multiplicación y División: Enfocadas en las tablas del 1 al 10, garantizando divisiones exactas.
+## 🚀 Instalación y Uso Local
 
-Sistema Multijugador Local: Permite configurar hasta 5 jugadores, gestionando una rotación de turnos automática.
+Para correr este proyecto en tu red local y jugar con otros dispositivos:
 
-Persistencia de Datos: Utiliza LocalStorage para guardar el perfil de cada jugador y un historial detallado de aciertos y errores por operación.
+1. Clona este repositorio:
+   ```bash
+   git clone https://github.com/jusalazar2/MathBlocks.git
+   ```
+2. Instala las dependencias del servidor:
+   ```bash
+   npm install
+   ```
+3. Inicia el servidor de desarrollo:
+   ```bash
+   npm run dev
+   ```
+4. Abre `http://localhost:3000` en el equipo Host para crear la sala.
+5. Los demás jugadores deben ingresar la IP del Host en su navegador (ej. `http://192.168.1.15:3000`) y usar el PIN de la sala para unirse.
 
-Feedback Visual y Físicas:
+## 📁 Estructura del Proyecto
+```text
+/MathBlocks
+├── server.js              # Servidor Node.js y lógica central de WebSockets
+├── package.json           # Dependencias y scripts
+├── public/                # Archivos estáticos del Frontend
+│   ├── index.html         # Interfaz de usuario, modales y layout
+│   ├── style.css          # Estilos y animaciones
+│   ├── app.js             # Lógica del cliente y conexión Socket.io
+│   └── assets/            # Imágenes locales (Numberblocks)
+```
 
-Renderizado dinámico de imágenes (assets) que corresponden al número exacto en pantalla.
-
-Animación de Shake (temblor) para respuestas incorrectas.
-
-Animación Pop-in con revelación del signo igual (=) y el resultado al acertar.
-
-Simulación de físicas de explosión de confeti en pantalla completa usando la librería canvas-confetti.
-
-UI/UX Moderna: Diseño sin bordes tipo neón, tarjetas interactivas, ventanas modales de configuración y un diseño responsivo que evita distracciones.
-
-🛠️ Tecnologías Utilizadas
-HTML5: Estructura semántica y contenedores modales.
-
-CSS3: Flexbox, transiciones suaves, animaciones @keyframes, y efectos avanzados de text-shadow para estilo neón/Glow.
-
-Vanilla JavaScript (ES6+): Manipulación del DOM, manejo de eventos, estado de la aplicación y lógica matemática condicional.
-
-Canvas Confetti (canvas-confetti): Librería de terceros implementada vía CDN para la simulación de físicas y partículas.
-
-🚀 Instalación y Uso Local
-Para correr este proyecto en tu entorno local:
-
-Clona este repositorio:
-
-Bash
-git clone https://github.com/tu-usuario/mathblocks.git
-Abre la carpeta del proyecto en tu editor de código (ej. Visual Studio Code).
-
-Imágenes de Personajes: Asegúrate de crear una carpeta llamada assets/ en la raíz del proyecto. Dentro, coloca las imágenes de los personajes nombradas estrictamente como numberblock_0.png, numberblock_1.png, etc.
-
-Utiliza la extensión Live Server en VS Code para lanzar el archivo index.html en tu navegador local (usualmente en el puerto 5500).
-
-📁 Estructura del Proyecto
-Plaintext
-/mathblocks
-├── index.html        # Estructura principal y modales
-├── style.css         # Estilos UI, animaciones y efectos visuales
-├── app.js            # Motor matemático, gestión de estado y DOM
-└── /assets           # Directorio para las imágenes generadas de los Numberblocks
-🗺️ Roadmap (Próximos Pasos)
-[ ] Multijugador Remoto: Integración con Firebase (Realtime Database) y WebSockets para permitir que varios dispositivos se conecten a la misma sala y los jugadores respondan desde sus propias pantallas (Estilo Kahoot).
-
-[ ] Niveles de Dificultad: Implementación automática de niveles que aumenten los límites matemáticos según la racha de aciertos del jugador.
+---
+*Desarrollado por [Juan Salazar](https://github.com/jusalazar2) - ¡Haciendo que el aprendizaje sea divertido!*
