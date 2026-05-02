@@ -452,3 +452,24 @@ body {
     box-shadow: 0 0 5px #2ECC71; 
     transform: scale(1.05);
 }
+
+/* --- SCROLL INTERNO PARA LAS ESTADÍSTICAS --- */
+#stats-container {
+    max-height: 55vh; /* La lista crecerá hasta ocupar como máximo un poco más de la mitad de la pantalla */
+    overflow-y: auto; /* Activa el scroll vertical solo cuando hay muchos jugadores */
+    padding-right: 10px; /* Deja un pequeño margen para que la barra de scroll no pise el texto */
+    margin-bottom: 15px;
+}
+
+/* (Opcional) Un diseño bonito para la barra de scroll para que combine con tu tema azul */
+#stats-container::-webkit-scrollbar {
+    width: 6px;
+}
+#stats-container::-webkit-scrollbar-track {
+    background: #f1f1f1; 
+    border-radius: 10px;
+}
+#stats-container::-webkit-scrollbar-thumb {
+    background: #2980B9; 
+    border-radius: 10px;
+}
