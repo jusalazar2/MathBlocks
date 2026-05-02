@@ -70,12 +70,6 @@ body {
     flex-grow: 1;
 }
 
-.huge-number {
-    font-size: 150px;
-    font-weight: bold;
-    text-shadow: 0px 4px 10px rgba(0,0,0,0.2);
-}
-
 /* Tarjeta Inferior */
 .interaction-card {
     background: rgba(255, 255, 255, 0.15);
@@ -141,16 +135,7 @@ body {
     text-shadow: 0 1px 3px rgba(0,0,0,0.3);
 }
 
-/* --- FASE 4: Imágenes y Animaciones --- */
-
-/* Estilo para los Numberblocks */
-.nb-image {
-    width: 120px; /* Ajusta este valor según el tamaño de tus dibujos */
-    height: auto;
-    margin: 10px auto 0 auto;
-    display: block;
-    filter: drop-shadow(0px 5px 5px rgba(0,0,0,0.3)); /* Les da un toque 3D */
-}
+/* --- FASE 4: Animaciones Globales --- */
 
 /* Contenedor principal de la app para animarlo todo */
 #app-wrapper {
@@ -291,17 +276,6 @@ body {
     letter-spacing: 1px;
 }
 
-/* --- ANIMACIÓN PARA EL RESULTADO FINAL --- */
-@keyframes popIn {
-    0% { transform: scale(0); opacity: 0; }
-    70% { transform: scale(1.2); opacity: 1; }
-    100% { transform: scale(1); opacity: 1; }
-}
-
-.pop-in-animation {
-    animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-}
-
 /* --- NUEVO LAYOUT CON PANEL LATERAL --- */
 #app-wrapper {
     flex-direction: row; /* Cambia a fila para poner el panel a la izquierda */
@@ -330,7 +304,6 @@ body {
 
 .sidebar-header { margin-bottom: 20px; text-align: center; }
 .room-badge { background: white; color: #2980B9; padding: 5px; border-radius: 10px; font-weight: bold; margin-top: 10px;}
-
 
 .player-list { 
     list-style: none; 
@@ -439,4 +412,43 @@ body {
         white-space: nowrap; /* El texto no se puede partir en dos líneas */
         padding: 10px 20px;
     }
+}
+
+/* Botones de las Tablas de Multiplicar/Dividir */
+.table-btn {
+    background: rgba(255, 255, 255, 0.2); 
+    border: none; 
+    color: white;
+    border-radius: 5px; 
+    width: 32px; 
+    height: 32px; 
+    cursor: pointer; 
+    font-size: 14px; 
+    transition: all 0.2s ease;
+}
+
+.table-btn.active { 
+    background: #2ECC71; /* Verde cuando está activado */
+    font-weight: bold; 
+    box-shadow: 0 0 5px #2ECC71; 
+    transform: scale(1.1);
+}
+
+/* Botones de Continentes para Banderas */
+.continent-btn {
+    background: rgba(255, 255, 255, 0.2); 
+    border: none; 
+    color: white;
+    border-radius: 5px; 
+    padding: 8px 12px;
+    cursor: pointer; 
+    font-size: 12px; 
+    transition: all 0.2s ease;
+}
+
+.continent-btn.active { 
+    background: #2ECC71; 
+    font-weight: bold; 
+    box-shadow: 0 0 5px #2ECC71; 
+    transform: scale(1.05);
 }
