@@ -364,3 +364,79 @@ body {
 }
 .identity-btn:hover { background: #2980B9; color: white; }
 .identity-btn:disabled { background: #eee; color: #999; cursor: not-allowed; }
+
+/* --- ADAPTACIÓN PARA CELULARES (MENÚ HAMBURGUESA) --- */
+@media (max-width: 768px) {
+    #app-wrapper {
+        flex-direction: column;
+        height: auto;
+    }
+    
+    /* Mostrar el botón hamburguesa */
+    #mobile-menu-btn {
+        display: block !important; 
+    }
+    
+    /* Ocultar la barra lateral por defecto y hacerla flotante */
+    .sidebar {
+        display: none; 
+        position: absolute;
+        top: 80px;
+        left: 10px;
+        z-index: 1000;
+        background: rgba(44, 62, 80, 0.95); /* Un poco transparente */
+        backdrop-filter: blur(10px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        width: 260px;
+        height: 70vh; /* Para que no ocupe toda la altura */
+    }
+    
+    /* Esta clase la inyectaremos con JS para mostrar el menú */
+    .sidebar.mobile-active {
+        display: flex !important;
+    }
+    
+    .main-content {
+        padding-left: 0;
+    }
+    
+    .top-bar {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+    }
+    
+    /* Ocultar el logo para que quepan los botones en el celular */
+    .logo { 
+        display: none; 
+    } 
+
+    /* --- MENÚ DE OPERACIONES DESLIZABLE (FORZADO) --- */
+    .menu-central {
+        width: 100%; 
+        max-width: 100vw; /* Evita que crezca más allá de la pantalla */
+    }
+
+    .operation-buttons {
+        display: flex !important;
+        flex-wrap: nowrap !important; /* Prohibido bajar de renglón */
+        overflow-x: auto !important;  /* Habilitar scroll horizontal */
+        justify-content: flex-start !important; /* Alinear a la izquierda para poder scrollear */
+        width: 100%;
+        padding: 10px 15px; /* Un poco de espacio a los lados */
+        gap: 15px;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Ocultar la barra de scroll visualmente */
+    .operation-buttons::-webkit-scrollbar {
+        display: none;
+    }
+
+    .op-btn {
+        flex: 0 0 auto !important; /* Prohibido encogerse */
+        width: max-content; /* El botón tomará el ancho exacto de su texto */
+        white-space: nowrap; /* El texto no se puede partir en dos líneas */
+        padding: 10px 20px;
+    }
+}
