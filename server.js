@@ -242,6 +242,33 @@ io.on('connection', (socket) => {
             }
         }
     });
+
+
+    // NUEVO: El jugador (Host) suelta su personaje para volver a ser Espectador
+    socket.on('releaseIdentity', () => {
+        const roomCode = socket.roomId;
+        const game = games[roomCode];
+        if (game) {
+            // Buscamos qué personaje estaba usando este enchufe (socket)
+            const player = game.players.find(p => p.socketId === socket.id);
+            if (player) {
+                player.connected = false;
+                player.socketId = null;
+                console.log(`👀 MODO ESPECTADOR: '${player.name}' soltó el control en la sala [${roomCode}]`);
+                
+                // Si era su turno justo en este momento, saltamos al siguiente
+                if (game.players[game.currentPlayerIndex] === player) {
+                    advanceTurn(roomCode); 
+                    updateProblem(roomCode, game.currentOperation); 
+                    io.to(roomCode).emit('newProblem', game);
+                } else {
+                    // Si no era su turno, solo actualizamos los puntitos verdes/rojos
+                    io.to(roomCode).emit('syncState', { roomCode, gameData: game });
+                }
+            }
+        }
+    });
+    
 });
 
 const PORT = 3000;

@@ -90,13 +90,17 @@ document.getElementById('btn-join-game').addEventListener('click', () => {
 
 socket.on('errorMsg', (msg) => alert(msg));
 
-// --- SELECCIÓN DE IDENTIDAD ---
+
+// --- SELECCIÓN DE IDENTIDAD Y ESPECTADOR ---
 socket.on('roomFound', (data) => {
     setupModal.classList.remove('active');
     joinModal.classList.remove('active');
     
     isHost = data.isHost; 
     document.getElementById('display-room-code').textContent = data.roomCode;
+    
+    // 🐛 BUGFIX: Guardamos los jugadores en la memoria local inmediatamente
+    localPlayers = data.gameData.players;
     
     const container = document.getElementById('available-players-container');
     container.innerHTML = '';
@@ -120,11 +124,43 @@ socket.on('roomFound', (data) => {
                 document.getElementById('btn-leave-room').style.display = 'inline-block';
                 myNameText.textContent = myIdentity;
                 
+                // Si es el Host quien elige jugador, le damos el botón naranja para salir
+                const toggleBtn = document.getElementById('btn-toggle-player');
+                if (isHost) {
+                    toggleBtn.style.display = 'inline-block';
+                    toggleBtn.textContent = '👀 Volver a mirar';
+                    toggleBtn.style.background = '#F39C12'; // Naranja
+                } else {
+                    toggleBtn.style.display = 'none'; // Los jugadores normales no pueden salir a espectador
+                }
+                
                 if(isHost) hostControls.style.display = 'block'; 
             };
         }
         container.appendChild(btn);
     });
+
+    document.getElementById('btn-spectator').onclick = () => {
+        myIdentity = 'Espectador';
+        identityModal.classList.remove('active');
+        
+        sidebar.style.display = '';
+        gameControlsArea.style.display = 'flex';
+        identityDisplay.style.display = 'block';
+        document.getElementById('btn-leave-room').style.display = 'inline-block';
+        myNameText.textContent = 'Espectador 👀';
+        
+        // 🐛 BUGFIX: Dibuja el panel lateral y el juego aunque seamos solo espectadores
+        updateGameUI(data.gameData);
+
+        // Prepara el botón verde por si el Host quiere entrar al juego luego
+        const toggleBtn = document.getElementById('btn-toggle-player');
+        toggleBtn.style.display = 'inline-block';
+        toggleBtn.textContent = '🎮 Unirme';
+        toggleBtn.style.background = '#2ECC71'; // Verde
+
+        if(isHost) hostControls.style.display = 'block'; 
+    };
     
     identityModal.classList.add('active');
 });
@@ -592,5 +628,59 @@ if (btnUpdateBanderas) {
         const activeContinents = Array.from(document.querySelectorAll('#btn-group-banderas .continent-btn.active')).map(b => b.getAttribute('data-val'));
         if(activeContinents.length === 0) return alert('¡Debes seleccionar al menos un continente!');
         socket.emit('updateConfig', { operation: 'banderas', continents: activeContinents });
+    });
+}
+
+// --- LÓGICA PARA ENTRAR Y SALIR DEL MODO ESPECTADOR (SOLO HOST) ---
+const btnTogglePlayer = document.getElementById('btn-toggle-player');
+if (btnTogglePlayer) {
+    btnTogglePlayer.addEventListener('click', () => {
+        
+        if (myIdentity === 'Espectador') {
+            // 1. Quiere unirse: Le mostramos las plazas disponibles
+            const container = document.getElementById('available-players-container');
+            container.innerHTML = '';
+            
+            localPlayers.forEach(p => {
+                const btn = document.createElement('button');
+                btn.className = 'identity-btn';
+                btn.textContent = p.name;
+                
+                if (p.connected) {
+                    btn.disabled = true;
+                    btn.textContent += ' (Ya en uso)';
+                } else {
+                    btn.onclick = () => {
+                        myIdentity = p.name;
+                        socket.emit('claimIdentity', p.name);
+                        identityModal.classList.remove('active');
+                        myNameText.textContent = myIdentity;
+                        
+                        // Transformamos el botón a "Volver a mirar"
+                        btnTogglePlayer.textContent = '👀 Volver a mirar';
+                        btnTogglePlayer.style.background = '#F39C12'; // Naranja
+                    };
+                }
+                container.appendChild(btn);
+            });
+            
+            identityModal.classList.add('active');
+            
+        } else {
+            // 2. Está jugando y quiere salirse (Volver a ser espectador)
+            socket.emit('releaseIdentity'); // Le avisa al server que suelte al personaje
+            myIdentity = 'Espectador';
+            myNameText.textContent = 'Espectador 👀';
+            
+            // Transformamos el botón de vuelta a "Unirme"
+            btnTogglePlayer.textContent = '🎮 Unirme';
+            btnTogglePlayer.style.background = '#2ECC71'; // Verde
+            
+            // Le bloqueamos el teclado localmente por seguridad
+            answerInput.disabled = true; 
+            verifyBtn.disabled = true; 
+            idkBtn.disabled = true;
+            answerInput.placeholder = "Modo Espectador...";
+        }
     });
 }

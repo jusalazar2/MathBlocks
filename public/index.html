@@ -101,7 +101,9 @@
                 <div id="identity-display" style="display: none; background: rgba(0,0,0,0.2); padding: 5px 15px; border-radius: 20px;">
                     <span style="font-weight: bold;">Yo soy: <span id="my-name-text" style="color: #F1C40F;">---</span></span>
                 </div>
-                <div>
+                <div>                    
+                    <!-- BOTÓN DINÁMICO: Unirme / Volver a mirar -->
+                    <button id="btn-toggle-player" class="btn-primary" style="display: none; border: none; margin-right: 10px; transition: 0.3s;"></button>
                     <button id="btn-open-stats" class="btn-outline">Estadísticas</button>
                     <button id="btn-leave-room" class="btn-outline" style="background: #E74C3C; color: white; border: none; margin-left: 10px; display: none;">Salir</button>
                 </div>
@@ -167,7 +169,11 @@
         <div class="modal-content" style="text-align: center;">
             <h2>¿Quién eres?</h2>
             <p>Selecciona tu nombre para entrar a la partida:</p>
-            <div id="available-players-container" style="display: flex; flex-direction: column; gap: 10px; margin-top: 15px;"></div>
+            <div id="available-players-container" style="display: flex; flex-direction: column; gap: 10px; margin-top: 15px; margin-bottom: 15px;"></div>
+            
+            <!-- NUEVO: Separador y botón de espectador -->
+            <hr style="border: none; border-top: 1px solid #ddd; margin: 15px 0;">
+            <button id="btn-spectator" class="btn-outline" style="width: 100%; color: #666; background: #f9f9f9; border: 2px dashed #ccc;">👀 Solo voy a mirar (Espectador)</button>
         </div>
     </div>
 
