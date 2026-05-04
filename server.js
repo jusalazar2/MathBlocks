@@ -275,7 +275,9 @@ io.on('connection', (socket) => {
 
 });
 
-const PORT = 3000;
-server.listen(PORT, () => { 
-    console.log(`🚀 Servidor orquestador corriendo en http://localhost:${PORT}`); 
+// El servidor en la nube nos dará un puerto en process.env.PORT, si no, usamos el 3000 local
+const PORT = process.env.PORT || 3000;
+
+server.listen(PORT, () => {
+    console.log(`🚀 Servidor corriendo en el puerto ${PORT}`);
 });

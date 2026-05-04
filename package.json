@@ -4,6 +4,8 @@
   "description": "🔢 MathBlocks - Interactive Math Learning Tool (Nota: Reemplaza este enlace con una captura de pantalla real de tu juego)",
   "main": "app.js",
   "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon server.js"
   },
   "repository": {
