@@ -83,6 +83,23 @@
                         </div>
                         <button id="btn-update-banderas" class="btn-primary" style="width: 100%; padding: 5px 10px; font-size: 12px; margin-top: 10px;">Aplicar Continentes</button>
                     </div>
+
+                    <!-- Config Mapamundi -->
+                    <div id="config-mapamundi" class="game-config" style="display: none;">
+                        <label style="font-size: 12px; color: #ddd;">Modo de Visualización:</label>
+                        <select id="host-map-mode" style="width: 100%; padding: 5px; border-radius: 5px; border: none; margin-top: 5px; margin-bottom: 10px;">
+                            <option value="mapa">🗺️ Mapa Interactivo</option>
+                            <option value="tablon">🗂️ Tablón de Banderas</option>
+                        </select>
+
+                        <label style="font-size: 12px; color: #ddd;">Idioma de la Voz:</label>
+                        <select id="host-map-lang" style="width: 100%; padding: 5px; border-radius: 5px; border: none; margin-top: 5px; margin-bottom: 10px;">
+                            <option value="es-ES">🇪🇸 Español</option>
+                            <option value="en-US">🇺🇸 Inglés</option>
+                        </select>
+
+                        <button id="btn-update-mapamundi" class="btn-primary" style="width: 100%; padding: 5px 10px; font-size: 12px;">Aplicar Cambios</button>
+                    </div>
                 </div>
 
                 <button id="btn-end-game" class="btn-outline" style="width: 100%; font-size: 14px; padding: 8px; margin-top: 15px; background: #E74C3C; color: white; border: none;">🏁 Terminar Juego</button>
@@ -118,6 +135,7 @@
                     <button class="op-btn" data-op="multiplicacion"><span class="op-icon">x</span><span class="op-text">Multiplicación</span></button>
                     <button class="op-btn" data-op="division"><span class="op-icon">÷</span><span class="op-text">División</span></button>
                     <button class="op-btn" data-op="banderas"><span class="op-icon">🌍</span><span class="op-text">Banderas</span></button>
+                    <button class="op-btn" data-op="mapamundi"><span class="op-icon">🗺️</span><span class="op-text">Mapa</span></button>
                 </div>
                 <div id="current-player" class="turno-grande">Esperando jugadores...</div>
             </div>

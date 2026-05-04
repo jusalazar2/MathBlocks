@@ -5,6 +5,7 @@ const { Server } = require('socket.io');
 // 🚀 IMPORTAMOS TUS NUEVOS MÓDULOS INTELIGENTES
 const mathGame = require('./server/games/matematicas');
 const flagsGame = require('./server/games/banderas');
+const mapamundiGame = require('./server/games/mapamundi'); 
 
 const app = express();
 const server = http.createServer(app);
@@ -29,7 +30,6 @@ function advanceTurn(roomCode) {
 }
 
 // --- 🧠 FUNCIÓN ORQUESTADORA DE PROBLEMAS ---
-// Decide a qué módulo pedirle la información
 function updateProblem(roomCode, operation) {
     const game = games[roomCode];
     if (!game) return;
@@ -38,6 +38,8 @@ function updateProblem(roomCode, operation) {
 
     if (operation === 'banderas') {
         game.currentProblem = flagsGame.generateProblem(game);
+    } else if (operation === 'mapamundi') {
+        game.currentProblem = mapamundiGame.generateProblem(game); // 🌟 NUEVO
     } else {
         game.currentProblem = mathGame.generateProblem(game, operation);
     }
@@ -60,6 +62,7 @@ io.on('connection', (socket) => {
             tablesMultiplicacion: [1,2,3,4,5,6,7,8,9,10], // NUEVO
             tablesDivision: [1,2,3,4,5,6,7,8,9,10],       // NUEVO
             continents: ['América', 'Europa', 'Asia', 'África', 'Oceanía'], // NUEVO
+            mapMode: 'mapa', mapLang: 'es-ES', // NUEVO
             currentPlayerIndex: 0, currentOperation: 'suma', currentProblem: {}
         };
         socket.join(roomCode); socket.roomId = roomCode;
@@ -228,6 +231,7 @@ io.on('connection', (socket) => {
                 if (data.operation === 'multiplicacion') game.tablesMultiplicacion = data.tables;
                 if (data.operation === 'division') game.tablesDivision = data.tables;          
                 if (data.operation === 'banderas') game.continents = data.continents; 
+                if (data.operation === 'mapamundi') { game.mapMode = data.mapMode; game.mapLang = data.mapLang; }
                 
                 console.log(`⚙️ CONFIG: El host cambió el límite de '${data.operation}' a ${data.limit} en la sala [${roomCode}]`);
                 
@@ -268,7 +272,7 @@ io.on('connection', (socket) => {
             }
         }
     });
-    
+
 });
 
 const PORT = 3000;

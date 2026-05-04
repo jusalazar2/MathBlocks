@@ -210,6 +210,10 @@ async function loadGameModule(operation) {
         folder = 'banderas';
         jsFile = 'flags.js';
         moduleObjName = 'FlagsGame';
+    } else if (operation === 'mapamundi') { 
+        folder = 'mapamundi';
+        jsFile = 'mapamundi.js';
+        moduleObjName = 'MapamundiGame';
     }
 
     const mountPoint = document.getElementById('game-mount-point');
@@ -266,12 +270,27 @@ async function updateGameUI(gameData) {
     currentGameModuleObj = await loadGameModule(gameData.currentOperation);
 
     // 1. HUD Global (Controlado por app.js)
-    if (gameData.currentOperation === 'banderas') {
-        questionTitle.textContent = "¿A qué país pertenece esta bandera?";
-        answerInput.type = 'text';
+    const interactionCard = document.querySelector('.interaction-card');
+    const turnIndicator = document.getElementById('current-player') ? document.getElementById('current-player').parentElement : null;
+
+    if (gameData.currentOperation === 'mapamundi') {
+        // 👁️ MODO EXPLORACIÓN: Apagamos los inputs y el turno
+        if(interactionCard) interactionCard.style.display = 'none';
+        //if(turnIndicator) turnIndicator.style.display = 'none';
+        questionTitle.textContent = "🗺️ Pasa el mouse para descubrir los países";
     } else {
-        questionTitle.textContent = "¿Cuál es el resultado?";
-        answerInput.type = 'number';
+        // 🎮 MODO JUEGO: Encendemos los inputs y el turno
+        if(interactionCard) interactionCard.style.display = 'block';
+        if(turnIndicator) turnIndicator.style.display = 'block'; // o 'inline-block' si así lo tenías
+        
+        // Textos normales
+        if (gameData.currentOperation === 'banderas') {
+            questionTitle.textContent = "¿A qué país pertenece esta bandera?";
+            answerInput.type = 'text';
+        } else {
+            questionTitle.textContent = "¿Cuál es el resultado?";
+            answerInput.type = 'number';
+        }
     }
 
     // 2. DELEGACIÓN: Le decimos al archivo JS del mini-juego que pinte su "nivel"
@@ -319,6 +338,8 @@ async function updateGameUI(gameData) {
                 btn.classList.toggle('active', gameData.continents.includes(btn.getAttribute('data-val')));
             });
         }
+        if (gameData.mapMode) document.getElementById('host-map-mode').value = gameData.mapMode;
+        if (gameData.mapLang) document.getElementById('host-map-lang').value = gameData.mapLang;
     }
 }
 
@@ -332,6 +353,11 @@ socket.on('newProblem', async (gameData) => {
 socket.on('answerResult', (data) => {
     appWrapper.classList.remove('party-animation', 'shake-animation');
     void appWrapper.offsetWidth; 
+
+    // 🌟 NUEVO: Si estamos en Banderas y la respuesta es correcta o se rindió (skipped), ¡Hablamos!
+    if (data.operation === 'banderas' && (data.isCorrect === true || data.isCorrect === 'skipped')) {
+        hablarPais(data.correctAnswer);
+    }
 
     if (data.isCorrect === true) {
         feedbackMessage.textContent = "¡Excelente! 🎉";
@@ -682,5 +708,26 @@ if (btnTogglePlayer) {
             idkBtn.disabled = true;
             answerInput.placeholder = "Modo Espectador...";
         }
+    });
+}
+
+// 🔊 NUEVO: Función global para leer texto en voz alta
+function hablarPais(texto) {
+    if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel(); // Corta cualquier audio anterior
+        const utterance = new SpeechSynthesisUtterance(texto);
+        utterance.lang = 'es-ES'; // Español
+        utterance.rate = 1;       // Velocidad normal
+        window.speechSynthesis.speak(utterance);
+    }
+}
+
+// --- LÓGICA DEL MAPAMUNDI ---
+const btnUpdateMapamundi = document.getElementById('btn-update-mapamundi');
+if (btnUpdateMapamundi) {
+    btnUpdateMapamundi.addEventListener('click', () => {
+        const mode = document.getElementById('host-map-mode').value;
+        const lang = document.getElementById('host-map-lang').value;
+        socket.emit('updateConfig', { operation: 'mapamundi', mapMode: mode, mapLang: lang });
     });
 }

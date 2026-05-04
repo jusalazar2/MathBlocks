@@ -1,0 +1,62 @@
+/* Apuntamos a las imágenes dentro del mapa */
+.jvm-marker image {
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+    /* 🌟 EL TRUCO: En mapas SVG, el punto 0 0 es el centro exacto del marcador */
+    transform-origin: 0px 0px !important; 
+    cursor: pointer;
+}
+
+/* EFECTO NEÓN Y TAMAÑO */
+.jvm-marker:hover image, 
+.jvm-marker.jvm-active image {
+    /* Usamos el transform clásico que todos los navegadores y celulares entienden */
+    transform: scale(2.5) !important; 
+    filter: drop-shadow(0px 0px 6px #00FFCC) drop-shadow(0px 0px 18px #00FFCC) !important;
+    z-index: 9999 !important;
+}
+
+.jvm-tooltip {
+    background: rgba(0, 0, 0, 0.9) !important;
+    color: #00FFCC !important;
+    border: 1px solid rgba(0, 255, 204, 0.5) !important;
+    box-shadow: 0 0 10px rgba(0, 255, 204, 0.3) !important;
+    font-size: 14px !important;
+    font-weight: bold !important;
+    border-radius: 8px !important;
+    padding: 6px 12px !important;
+    z-index: 9999 !important;
+}
+
+/* --- ESTILOS DEL MODO TABLÓN --- */
+.tablon-board {
+    display: flex !important;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-content: flex-start;
+    gap: 15px;
+    padding: 30px !important;
+    overflow-y: auto !important;
+}
+
+.flag-circle {
+    width: 60px; height: 60px; border-radius: 50%; background-size: cover; background-position: center;
+    border: 3px solid rgba(255, 255, 255, 0.3); cursor: pointer; position: relative;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+}
+
+.flag-circle:hover {
+    transform: scale(1.5); border-color: #00FFCC; z-index: 10;
+    box-shadow: 0 0 10px rgba(0,255,204,0.8), 0 0 20px rgba(0,255,204,0.6), 0 0 40px rgba(0,255,204,0.4);
+}
+
+.flag-tooltip-tablon {
+    position: absolute; bottom: -35px; left: 50%; transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.9); color: #00FFCC; padding: 6px 12px; border-radius: 8px;
+    font-size: 14px; font-weight: bold; white-space: nowrap; opacity: 0; visibility: hidden;
+    transition: opacity 0.2s ease, bottom 0.2s ease; pointer-events: none;
+    text-shadow: 0 0 5px rgba(0, 255, 204, 0.5); border: 1px solid rgba(0, 255, 204, 0.3); z-index: 9999;
+}
+
+.flag-circle:hover .flag-tooltip-tablon {
+    opacity: 1; visibility: visible; bottom: -40px;
+}
