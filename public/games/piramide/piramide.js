@@ -162,8 +162,8 @@ window.PiramideGame = {
         const numPlayers = players.length;
         
         // 🌟 DYNAMIC RADIUS AND SCALE FIX FOR HIGH PLAYER COUNTS
-        let radius = 280; 
-        let scale = 1;
+        let radius = 240; 
+        let scale = 0.95;
         if (numPlayers === 3) { radius = 300; scale = 0.9; }
         else if (numPlayers === 4) { radius = 340; scale = 0.8; }
         else if (numPlayers === 5) { radius = 380; scale = 0.7; }

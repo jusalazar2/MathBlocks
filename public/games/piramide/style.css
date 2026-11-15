@@ -1,18 +1,31 @@
 #react-pyramid-container {
     position: relative;
     width: 100%;
-    max-width: 100%; 
-    min-height: 800px; 
+    height: 100%; 
+    min-height: 70vh; 
     background-color: #020617; 
     border-radius: 20px;
     border: 1px solid #1e293b;
     display: flex;
     flex-direction: column;
     align-items: center;
-    overflow: hidden; 
+    overflow-y: auto; 
+    overflow-x: hidden;
     font-family: 'Segoe UI', sans-serif;
     user-select: none; 
     box-sizing: border-box; 
+}
+
+/* Scrollbar personalizado */
+#react-pyramid-container::-webkit-scrollbar {
+    width: 8px;
+}
+#react-pyramid-container::-webkit-scrollbar-track {
+    background: transparent;
+}
+#react-pyramid-container::-webkit-scrollbar-thumb {
+    background-color: #334155;
+    border-radius: 10px;
 }
 
 .bg-glow {
@@ -35,10 +48,13 @@
     justify-content: space-between;
     align-items: center;
     padding: 15px 25px;
-    background: rgba(15, 23, 42, 0.5);
-    backdrop-filter: blur(10px);
+    background: rgba(15, 23, 42, 0.95);
     border-bottom: 1px solid #1e293b;
-    z-index: 40;
+    z-index: 100; 
+    position: sticky; 
+    top: 0;
+    flex-wrap: wrap; 
+    gap: 15px;
 }
 
 .header-title { display: flex; align-items: center; gap: 10px; }
@@ -47,14 +63,44 @@
     font-size: 20px; font-weight: 900;
     background: linear-gradient(to right, #c084fc, #ec4899);
     -webkit-background-clip: text; color: transparent; margin: 0;
+    white-space: nowrap;
 }
 
-.header-controls { display: flex; gap: 10px; }
+/* BANNER DE ACCIÓN EN EL HEADER */
+.action-banner {
+    flex-grow: 1; 
+    display: flex;
+    justify-content: center;
+    min-width: 250px; 
+}
+
+#game-status-msg {
+    background: rgba(30, 41, 59, 1); 
+    border: 1px solid #475569;
+    color: #e2e8f0;
+    font-size: 14px; 
+    font-weight: bold;
+    padding: 8px 15px;
+    border-radius: 99px; 
+    box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    text-align: center;
+    transition: all 0.3s ease;
+    white-space: normal; 
+}
+
+.header-controls { 
+    display: flex; 
+    gap: 10px; 
+    justify-content: flex-end; 
+    flex-wrap: wrap; 
+}
 
 .ctrl-btn {
     display: flex; align-items: center; gap: 8px;
-    padding: 8px 15px; border-radius: 12px; font-size: 14px; font-weight: 600;
+    padding: 8px 12px; 
+    border-radius: 12px; font-size: 13px; font-weight: 600;
     cursor: pointer; transition: 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    white-space: nowrap;
 }
 
 .btn-slate { background: #1e293b; color: #cbd5e1; border: 1px solid #334155; }
@@ -62,24 +108,16 @@
 .btn-red { background: rgba(127, 29, 29, 0.3); color: #fca5a5; border: 1px solid rgba(127, 29, 29, 0.5); }
 .btn-red:hover { background: rgba(127, 29, 29, 0.6); }
 
-/* BANNER DE ACCIÓN */
-.action-banner {
-    position: relative; z-index: 30;
-    background: rgba(15, 23, 42, 0.8); border: 1px solid #334155; color: white;
-    font-size: 16px; font-weight: bold; padding: 12px 30px; border-radius: 12px;
-    margin-top: 20px; backdrop-filter: blur(10px); box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-    text-align: center;
-}
-
+/* ÁREA DEL TABLERO */
 .pyramid-board-area {
     position: relative; 
     width: 100%; 
-    flex-grow: 1;
+    min-height: 850px;
     display: flex; 
     justify-content: center; 
-    align-items: center;    
-    padding-top: 20px;
-    padding-bottom: 20px; 
+    align-items: center;
+    margin-top: 60px; 
+    padding-bottom: 60px; 
 }
 
 /* HUB CENTRAL */
@@ -117,7 +155,7 @@
 .hub-btn:hover { background-color: #a855f7; transform: scale(1.05); }
 .hub-btn.lanzado { background-color: #1e293b; color: #64748b; cursor: not-allowed; box-shadow: none; transform: scale(1); }
 
-/* Botón Pasar Turno */
+/* BOTÓN PASAR TURNO */
 .skip-turn-btn {
     margin-top: 8px; background: transparent; border: none; color: #94a3b8;
     font-size: 12px; font-weight: bold; cursor: pointer; transition: color 0.2s; pointer-events: auto;

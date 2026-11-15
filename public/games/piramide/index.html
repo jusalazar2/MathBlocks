@@ -2,23 +2,24 @@
     <div class="bg-glow purple-glow"></div>
     <div class="bg-glow indigo-glow"></div>
 
-    <!-- HEADER: Título y Controles (Igual a React) -->
+    <!-- HEADER: Título, Mensaje de Acción y Controles -->
     <header class="pyramid-header">
         <div class="header-title">
             <span class="trophy-icon">🏆</span>
             <h1>Pirámide Mística</h1>
         </div>
+        
+        <!-- 🌟 AQUÍ MOVIMOS EL MENSAJE DE ESTADO -->
+        <div class="action-banner">
+            <span id="game-status-msg">Tira el dado para comenzar tu turno.</span>
+        </div>
+
         <div class="header-controls">
             <button id="btn-show-rules" class="ctrl-btn btn-slate"><span class="icon">📖</span> Reglas</button>
             <button id="btn-surrender" class="ctrl-btn btn-red"><span class="icon">🏳️</span> Rendirse</button>
             <button id="btn-restart" class="ctrl-btn btn-slate"><span class="icon">🔄</span> Reiniciar</button>
         </div>
     </header>
-
-    <!-- Banner Superior de Acción -->
-    <div class="action-banner">
-        <span id="game-status-msg">Tira el dado para comenzar tu turno.</span>
-    </div>
 
     <!-- Área del Tablero -->
     <div class="pyramid-board-area">
