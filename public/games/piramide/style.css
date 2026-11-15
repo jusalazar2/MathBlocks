@@ -1,7 +1,9 @@
 #react-pyramid-container {
     position: relative;
-    width: 100%;
-    min-height: 1100px;
+    width: 100%;    
+    min-height: 1000px;
+    height: max-content; 
+    margin-bottom: 40px; 
     background-color: #020617; 
     border-radius: 20px;
     border: 1px solid #1e293b;
@@ -70,8 +72,14 @@
 }
 
 .pyramid-board-area {
-    position: relative; width: 100%; flex-grow: 1;
-    display: flex; justify-content: center; align-items: center;
+    position: relative; 
+    width: 100%; 
+    flex-grow: 1;
+    display: flex; 
+    justify-content: center; 
+    align-items: center;
+    padding-top: 50px;
+    padding-bottom: 150px;
 }
 
 /* HUB CENTRAL */
