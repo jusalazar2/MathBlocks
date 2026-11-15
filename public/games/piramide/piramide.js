@@ -160,9 +160,15 @@ window.PiramideGame = {
         
         const players = gameData.players;
         const numPlayers = players.length;
-        let radius = 280; let scale = 1;
-        if (numPlayers > 3) { radius = 350; scale = 0.85; }
-        if (numPlayers > 5) { radius = 400; scale = 0.7; }
+        
+        // 🌟 DYNAMIC RADIUS AND SCALE FIX FOR HIGH PLAYER COUNTS
+        let radius = 280; 
+        let scale = 1;
+        if (numPlayers === 3) { radius = 300; scale = 0.9; }
+        else if (numPlayers === 4) { radius = 340; scale = 0.8; }
+        else if (numPlayers === 5) { radius = 380; scale = 0.7; }
+        else if (numPlayers >= 6) { radius = 450; scale = 0.55; } // Push them way out, shrink them down
+        
         layer.style.transform = `scale(${scale})`;
         
         players.forEach((playerObj, index) => {
@@ -220,7 +226,6 @@ window.PiramideGame = {
                         circle.classList.add(`val-${circleData.val}`);
                     }
 
-                    // 🚀 MAGIA: Decidimos si alumbra basándonos en las reglas del servidor
                     let highlight = false;
                     if (isMyTurn && !PiramideGame.isRolling) {
                         const isCircleMine = (playerName === myActualIdentity);

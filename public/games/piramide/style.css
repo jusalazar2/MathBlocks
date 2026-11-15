@@ -1,8 +1,9 @@
 #react-pyramid-container {
     position: relative;
-    width: 100%;    
-    min-height: 1000px;
-    height: max-content; 
+    width: 100%;
+    /* 🌟 RESPONSIVE HEIGHT FIX */
+    min-height: 85vh; /* Takes up most of the viewport height */
+    height: 100%;
     margin-bottom: 40px; 
     background-color: #020617; 
     border-radius: 20px;
@@ -78,8 +79,9 @@
     display: flex; 
     justify-content: center; 
     align-items: center;
+    /* Extra padding to ensure content doesn't clip */
     padding-top: 50px;
-    padding-bottom: 150px;
+    padding-bottom: 100px; 
 }
 
 /* HUB CENTRAL */
