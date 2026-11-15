@@ -214,6 +214,10 @@ async function loadGameModule(operation) {
         folder = 'mapamundi';
         jsFile = 'mapamundi.js';
         moduleObjName = 'MapamundiGame';
+    } else if (operation === 'piramide') { 
+        folder = 'piramide';
+        jsFile = 'piramide.js';
+        moduleObjName = 'PiramideGame';
     }
 
     const mountPoint = document.getElementById('game-mount-point');
@@ -273,11 +277,16 @@ async function updateGameUI(gameData) {
     const interactionCard = document.querySelector('.interaction-card');
     const turnIndicator = document.getElementById('current-player') ? document.getElementById('current-player').parentElement : null;
 
-    if (gameData.currentOperation === 'mapamundi') {
-        // 👁️ MODO EXPLORACIÓN: Apagamos los inputs y el turno
+
+    if (gameData.currentOperation === 'mapamundi' || gameData.currentOperation === 'piramide') { // <- MODIFICA ESTA LÍNEA
+        // 👁️ MODO EXPLORACIÓN O PIRÁMIDE: Apagamos los inputs y el turno
         if(interactionCard) interactionCard.style.display = 'none';
-        //if(turnIndicator) turnIndicator.style.display = 'none';
-        questionTitle.textContent = "🗺️ Pasa el mouse para descubrir los países";
+        
+        if (gameData.currentOperation === 'piramide') {
+            questionTitle.textContent = "¡Selecciona tus círculos iluminados!";
+        } else {
+            questionTitle.textContent = "🗺️ Pasa el mouse para descubrir los países";
+        }
     } else {
         // 🎮 MODO JUEGO: Encendemos los inputs y el turno
         if(interactionCard) interactionCard.style.display = 'block';
@@ -537,19 +546,34 @@ socket.on('gameEnded', (data) => {
         modalContent.style.width = '95%';
     }
 
+    // 🌟 AQUÍ ESTÁ LA MAGIA: Agregamos la Pirámide a las categorías del podio
     const categories = [
         { key: 'suma', label: 'SUMAS', icon: '➕', color: '#2980B9' },
         { key: 'resta', label: 'RESTAS', icon: '➖', color: '#8E44AD' },
         { key: 'multiplicacion', label: 'MULTIPLICACIÓN', icon: '✖️', color: '#2C3E50' },
         { key: 'division', label: 'DIVISIÓN', icon: '➗', color: '#16A085' },
-        { key: 'banderas', label: 'BANDERAS', icon: '🌍', color: '#005C53' }
+        { key: 'banderas', label: 'BANDERAS', icon: '🌍', color: '#005C53' },
+        { key: 'piramide', label: 'PIRÁMIDE MÍSTICA', icon: '🔺', color: '#9333ea' } // <-- ¡NUEVO!
     ];
 
     let hayGanadores = false;
 
     const renderStep = (player, place, catKey) => {
         if (!player) return `<div style="flex: 1; min-width: 70px;"></div>`;
-        const aciertos = player.stats[catKey].bien;
+        
+        let aciertos = player.stats[catKey]?.bien || 0;
+        let displayScore = `${aciertos} pts`;
+        
+        // Formato especial de puntaje para la Pirámide
+        if (catKey === 'piramide') {
+            if (aciertos >= 1000) {
+                displayScore = "¡GANADOR!";
+            } else {
+                // Matemáticas inversas para mostrar cuántos puntos le faltaron a los perdedores
+                displayScore = `Faltaron: ${100 - aciertos}`; 
+            }
+        }
+
         let height, bgColor, badge;
 
         if (place === 1) {
@@ -565,7 +589,7 @@ socket.on('gameEnded', (data) => {
                 <div style="font-size: 13px; font-weight: bold; color: #2C3E50; margin-bottom: 2px; text-align: center; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                     ${badge} ${player.name}
                 </div>
-                <div style="font-size: 11px; color: #27AE60; font-weight: bold; margin-bottom: 5px;">${aciertos} pts</div>
+                <div style="font-size: 11px; color: #27AE60; font-weight: bold; margin-bottom: 5px;">${displayScore}</div>
                 <img src="assets/numberblock_${place}.png" alt="NB ${place}" style="height: 45px; object-fit: contain; margin-bottom: -12px; z-index: 2; filter: drop-shadow(0px 3px 3px rgba(0,0,0,0.4));">
                 <div style="width: 100%; height: ${height}; background: ${bgColor}; border-radius: 5px 5px 0 0; display: flex; justify-content: center; box-shadow: inset 0 2px 5px rgba(255,255,255,0.5), 0 5px 10px rgba(0,0,0,0.15); border: 1px solid rgba(0,0,0,0.1); border-bottom: none;">
                     <span style="font-size: 24px; font-weight: bold; color: rgba(255,255,255,0.8); margin-top: 5px; text-shadow: 1px 1px 2px rgba(0,0,0,0.3);">${place}</span>
@@ -610,7 +634,7 @@ socket.on('gameEnded', (data) => {
     document.getElementById('podium-modal').classList.add('active');
 
     if (typeof confetti !== 'undefined') {
-        confetti({ particleCount: 500, spread: 200, startVelocity: 60, gravity: 0.8, origin: { y: 0.4 }, zIndex: 99999, colors: ['#FFD700', '#C0C0C0', '#CD7F32', '#3498DB', '#E74C3C', '#2ECC71'] });
+        confetti({ particleCount: 500, spread: 200, startVelocity: 60, gravity: 0.8, origin: { y: 0.4 }, zIndex: 99999, colors: ['#FFD700', '#C0C0C0', '#CD7F32', '#3498DB', '#E74C3C', '#9333ea'] });
     }
 });
 

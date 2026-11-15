@@ -1,0 +1,57 @@
+<div id="react-pyramid-container">
+    <div class="bg-glow purple-glow"></div>
+    <div class="bg-glow indigo-glow"></div>
+
+    <!-- HEADER: Título y Controles (Igual a React) -->
+    <header class="pyramid-header">
+        <div class="header-title">
+            <span class="trophy-icon">🏆</span>
+            <h1>Pirámide Mística</h1>
+        </div>
+        <div class="header-controls">
+            <button id="btn-show-rules" class="ctrl-btn btn-slate"><span class="icon">📖</span> Reglas</button>
+            <button id="btn-surrender" class="ctrl-btn btn-red"><span class="icon">🏳️</span> Rendirse</button>
+            <button id="btn-restart" class="ctrl-btn btn-slate"><span class="icon">🔄</span> Reiniciar</button>
+        </div>
+    </header>
+
+    <!-- Banner Superior de Acción -->
+    <div class="action-banner">
+        <span id="game-status-msg">Tira el dado para comenzar tu turno.</span>
+    </div>
+
+    <!-- Área del Tablero -->
+    <div class="pyramid-board-area">
+        <div class="center-hub">
+            <div class="hub-turn-label">TURNO <span id="hub-turn-display">1</span></div>
+            <div id="hub-dice-icon" class="hub-dice-empty">🎲</div>
+            <div id="hub-dice-value" class="hub-dice-box" style="display: none;"></div>
+            <button id="btn-react-roll" class="hub-btn">Lanzar Dado</button>
+        </div>
+        <div id="react-players-layer" class="react-players-layer"></div>
+    </div>
+
+    <!-- MODAL DE REGLAS -->
+    <div id="rules-modal" class="modal" style="display: none; position: absolute; z-index: 1000;">
+        <div class="modal-content" style="background: #0f172a; border: 1px solid #334155; color: white;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h3 style="color: white; font-size: 20px; font-weight: bold;">Premios y Castigos (2,3,4,5)</h3>
+                <button id="btn-close-rules" style="background: transparent; border: none; color: #94a3b8; font-size: 20px; cursor: pointer;">✖</button>
+            </div>
+            <ul style="text-align: left; padding: 0; list-style: none; font-size: 14px; color: #cbd5e1; margin-bottom: 20px; line-height: 2;">
+                <li><span style="color: #4ade80;">🎁</span> Apaga otro círculo tuyo.</li>
+                <li><span style="color: #4ade80;">🎁</span> Apaga un círculo de un compañero.</li>
+                <li><span style="color: #f87171;">💀</span> Enciende un círculo apagado (Inicia en 6).</li>
+                <li><span style="color: #f87171;">💀</span> Suma +1 a todos tus números 2.</li>
+            </ul>
+            <h3 style="color: white; font-size: 20px; font-weight: bold; margin-bottom: 10px;">Reglas Especiales</h3>
+            <ul style="text-align: left; padding: 0; list-style: none; font-size: 14px; color: #cbd5e1; line-height: 2;">
+                <li><span style="color: #f87171; font-weight: bold;">1:</span> Suma +1 a un círculo del <b>Siguiente Jugador</b>.</li>
+                <li><span style="color: #c084fc; font-weight: bold;">6:</span> Tira de nuevo. <br><b> &gt;3 :</b> -1 a un círculo de <b>Todos</b>.<br><b> &lt;4 :</b> +1 a <b>Dos tuyos</b> y <b>Uno rival</b>.</li>
+                <li style="margin-top: 10px; padding: 10px; background: rgba(127, 29, 29, 0.3); border: 1px solid rgba(127, 29, 29, 0.5); border-radius: 8px;">
+                    <b>Límite de 6:</b> Si una regla te obliga a sumar +1 y no puedes (todos en 6), pierdes tu turno.
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
